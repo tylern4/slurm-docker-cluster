@@ -14,11 +14,11 @@ services:
       - var_lib_mysql:/var/lib/mysql
 
   slurmdbd:
-    image: slurm-docker-cluster:${IMAGE_TAG:-21.08}
+    image: slurm-docker-cluster:${IMAGE_TAG:-23.11.6}
     build:
       context: .
       args:
-        SLURM_TAG: ${SLURM_TAG:-slurm-21-08-6-1}
+        SLURM_TAG: ${SLURM_TAG:-slurm-23.11.6-6-1}
     command: ["slurmdbd"]
     container_name: slurmdbd
     hostname: slurmdbd
@@ -32,7 +32,7 @@ services:
       - mysql
 
   slurmctld:
-    image: slurm-docker-cluster:${IMAGE_TAG:-21.08}
+    image: slurm-docker-cluster:${IMAGE_TAG:-23.11.6}
     command: ["slurmctld"]
     container_name: slurmctld
     hostname: slurmctld
@@ -41,40 +41,195 @@ services:
       - etc_slurm:/etc/slurm
       - slurm_jobdir:/data
       - var_log_slurm:/var/log/slurm
+      - ./slurm.conf:/etc/slurm/slurm.conf:ro
+      - ./slurmdbd.conf:/etc/slurm/slurmdbd.conf:ro
     expose:
       - "6817"
     depends_on:
       - "slurmdbd"
 
-  c1:
-    image: slurm-docker-cluster:${IMAGE_TAG:-21.08}
+  login01:
+    image: slurm-docker-cluster:${IMAGE_TAG:-23.11.6}
     command: ["slurmd"]
-    hostname: c1
-    container_name: c1
+    hostname: login01
+    container_name: login01
     volumes:
       - etc_munge:/etc/munge
       - etc_slurm:/etc/slurm
       - slurm_jobdir:/data
       - var_log_slurm:/var/log/slurm
+      - ./ssh:/home/hpcuser/.ssh
+      - ./slurm.conf:/etc/slurm/slurm.conf:ro
+      - ./slurmdbd.conf:/etc/slurm/slurmdbd.conf:ro
     expose:
       - "6818"
+      - "22"
     depends_on:
       - "slurmctld"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.1'
+          memory: 50M
+        reservations:
+          cpus: '0.01'
+          memory: 20M
 
-  c2:
-    image: slurm-docker-cluster:${IMAGE_TAG:-21.08}
+
+  node01:
+    image: slurm-docker-cluster:${IMAGE_TAG:-23.11.6}
     command: ["slurmd"]
-    hostname: c2
-    container_name: c2
+    hostname: node01
+    container_name: node01
     volumes:
       - etc_munge:/etc/munge
       - etc_slurm:/etc/slurm
       - slurm_jobdir:/data
       - var_log_slurm:/var/log/slurm
+      - ./ssh:/home/hpcuser/.ssh
+      - ./slurm.conf:/etc/slurm/slurm.conf:ro
+      - ./slurmdbd.conf:/etc/slurm/slurmdbd.conf:ro
     expose:
       - "6818"
     depends_on:
       - "slurmctld"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.1'
+          memory: 50M
+        reservations:
+          cpus: '0.01'
+          memory: 20M
+  
+  node02:
+    image: slurm-docker-cluster:${IMAGE_TAG:-23.11.6}
+    command: ["slurmd"]
+    hostname: node02
+    container_name: node02
+    volumes:
+      - etc_munge:/etc/munge
+      - etc_slurm:/etc/slurm
+      - slurm_jobdir:/data
+      - var_log_slurm:/var/log/slurm
+      - ./ssh:/home/hpcuser/.ssh
+      - ./slurm.conf:/etc/slurm/slurm.conf:ro
+      - ./slurmdbd.conf:/etc/slurm/slurmdbd.conf:ro
+    expose:
+      - "6818"
+    depends_on:
+      - "slurmctld"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.1'
+          memory: 50M
+        reservations:
+          cpus: '0.01'
+          memory: 20M
+
+  node03:
+    image: slurm-docker-cluster:${IMAGE_TAG:-23.11.6}
+    command: ["slurmd"]
+    hostname: node03
+    container_name: node03
+    volumes:
+      - etc_munge:/etc/munge
+      - etc_slurm:/etc/slurm
+      - slurm_jobdir:/data
+      - var_log_slurm:/var/log/slurm
+      - ./ssh:/home/hpcuser/.ssh
+      - ./slurm.conf:/etc/slurm/slurm.conf:ro
+      - ./slurmdbd.conf:/etc/slurm/slurmdbd.conf:ro
+    expose:
+      - "6818"
+    depends_on:
+      - "slurmctld"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.1'
+          memory: 50M
+        reservations:
+          cpus: '0.01'
+          memory: 20M
+  node04:
+    image: slurm-docker-cluster:${IMAGE_TAG:-23.11.6}
+    command: ["slurmd"]
+    hostname: node04
+    container_name: node04
+    volumes:
+      - etc_munge:/etc/munge
+      - etc_slurm:/etc/slurm
+      - slurm_jobdir:/data
+      - var_log_slurm:/var/log/slurm
+      - ./ssh:/home/hpcuser/.ssh
+      - ./slurm.conf:/etc/slurm/slurm.conf:ro
+      - ./slurmdbd.conf:/etc/slurm/slurmdbd.conf:ro
+    expose:
+      - "6818"
+    depends_on:
+      - "slurmctld"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.1'
+          memory: 50M
+        reservations:
+          cpus: '0.01'
+          memory: 20M
+  node05:
+    image: slurm-docker-cluster:${IMAGE_TAG:-23.11.6}
+    command: ["slurmd"]
+    hostname: node05
+    container_name: node05
+    volumes:
+      - etc_munge:/etc/munge
+      - etc_slurm:/etc/slurm
+      - slurm_jobdir:/data
+      - var_log_slurm:/var/log/slurm
+      - ./ssh:/home/hpcuser/.ssh
+      - ./slurm.conf:/etc/slurm/slurm.conf:ro
+      - ./slurmdbd.conf:/etc/slurm/slurmdbd.conf:ro
+    expose:
+      - "6818"
+    depends_on:
+      - "slurmctld"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.1'
+          memory: 50M
+        reservations:
+          cpus: '0.01'
+          memory: 20M
+
+  node06:
+    image: slurm-docker-cluster:${IMAGE_TAG:-23.11.6}
+    command: ["slurmd"]
+    hostname: node06
+    container_name: node06
+    volumes:
+      - etc_munge:/etc/munge
+      - etc_slurm:/etc/slurm
+      - slurm_jobdir:/data
+      - var_log_slurm:/var/log/slurm
+      - ./ssh:/home/hpcuser/.ssh
+      - ./slurm.conf:/etc/slurm/slurm.conf:ro
+      - ./slurmdbd.conf:/etc/slurm/slurmdbd.conf:ro
+    expose:
+      - "6818"
+    depends_on:
+      - "slurmctld"
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 50M
+        reservations:
+          cpus: '0.1'
+          memory: 20M
+
 
 volumes:
   etc_munge:

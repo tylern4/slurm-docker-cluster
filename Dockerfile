@@ -16,6 +16,7 @@ RUN set -ex \
     && yum config-manager --set-enabled powertools \
     && yum -y install \
        wget \
+       openssh-server \
        bzip2 \
        perl \
        gcc \
@@ -38,6 +39,9 @@ RUN set -ex \
     && yum clean all \
     && rm -rf /var/cache/yum
 
+RUN ssh-keygen -A
+RUN groupadd -g 1000 hpcusers && useradd -rm -d /home/hpcuser -s /bin/bash -g 1000 -u 1000 hpcuser
+
 RUN alternatives --set python /usr/bin/python3
 
 RUN pip3 install Cython nose
@@ -57,7 +61,7 @@ RUN set -x \
     && pushd slurm \
     && ./configure --enable-debug --prefix=/usr --sysconfdir=/etc/slurm \
         --with-mysql_config=/usr/bin  --libdir=/usr/lib64 \
-    && make install \
+    && make -j install \
     && install -D -m644 etc/cgroup.conf.example /etc/slurm/cgroup.conf.example \
     && install -D -m644 etc/slurm.conf.example /etc/slurm/slurm.conf.example \
     && install -D -m644 etc/slurmdbd.conf.example /etc/slurm/slurmdbd.conf.example \
@@ -66,7 +70,7 @@ RUN set -x \
     && rm -rf slurm \
     && groupadd -r --gid=990 slurm \
     && useradd -r -g slurm --uid=990 slurm \
-    && mkdir /etc/sysconfig/slurm \
+    && mkdir -p /etc/sysconfig/slurm \
         /var/spool/slurmd \
         /var/run/slurmd \
         /var/run/slurmdbd \
@@ -88,11 +92,17 @@ RUN set -x \
 COPY slurm.conf /etc/slurm/slurm.conf
 COPY slurmdbd.conf /etc/slurm/slurmdbd.conf
 RUN set -x \
+    && chmod -R 777 /data \
     && chown slurm:slurm /etc/slurm/slurmdbd.conf \
     && chmod 600 /etc/slurm/slurmdbd.conf
-
 
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 
 CMD ["slurmdbd"]
+
+ARG STRESS_NG_VER="V0.17.08"
+RUN git clone -j 4 -b ${STRESS_NG_VER} --single-branch --depth=1 https://github.com/ColinIanKing/stress-ng.git \
+	&& cd stress-ng \
+	&& make -j install 
+	

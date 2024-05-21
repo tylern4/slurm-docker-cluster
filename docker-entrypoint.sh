@@ -45,6 +45,7 @@ fi
 
 if [ "$1" = "slurmd" ]
 then
+    gosu root /usr/sbin/sshd -D &
     echo "---> Starting the MUNGE Authentication service (munged) ..."
     gosu munge /usr/sbin/munged
 
@@ -57,6 +58,7 @@ then
     done
     echo "-- slurmctld is now active ..."
 
+    gosu root rm -rf /run/nologin || true
     echo "---> Starting the Slurm Node Daemon (slurmd) ..."
     exec /usr/sbin/slurmd -Dvvv
 fi
