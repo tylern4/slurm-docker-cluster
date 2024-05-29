@@ -8,8 +8,8 @@ jobs:
       - name: Build the stack
         run: SLURM_TAG=slurm-23-11-6-1 IMAGE_TAG=23.11.6 docker-compose up -d
       - name: List Nodes
-        run: docker exec -it login01 sinfo
+        run: docker exec login01 sinfo
       - name: List Jobs
-        run: docker exec -it login01 squeue
+        run: docker exec login01 squeue
       - name: List Hostnames
-        run: docker exec -it login01 srun -N 1 -n 1 hostname
+        run: docker exec login01 srun -N 1 -n 1 hostname
