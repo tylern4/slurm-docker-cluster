@@ -1,0 +1,15 @@
+name: slurm-cluster-tests
+on: push
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the stack
+        run: docker-compose up -d
+      - name: List Nodes
+        run: docker exec -it login01 sinfo
+      - name: List Jobs
+        run: docker exec -it login01 squeue
+      - name: List Hostnames
+        run: docker exec -it login01 srun -N 1 -n 1 hostname
