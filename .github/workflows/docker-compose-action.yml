@@ -6,7 +6,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build the stack
-        run: docker-compose up -d
+        run: SLURM_TAG=slurm-23-11-6-1 IMAGE_TAG=23.11.6 docker-compose up -d
       - name: List Nodes
         run: docker exec -it login01 sinfo
       - name: List Jobs
