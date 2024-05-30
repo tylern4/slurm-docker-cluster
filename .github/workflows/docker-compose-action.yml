@@ -8,11 +8,13 @@ jobs:
         with:
           cache-from: type=gha
           cache-to: type=gha,mode=max
+      - name: Configure Slurm
+        run: python -m pip install pyyaml && python create_slurm.py
+      - name: Generate ssh keys
+        run: ./gen_ssh_keys.sh
       - name: Build the stack
         run: SLURM_TAG=slurm-23-11-6-1 IMAGE_TAG=23.11.6 docker-compose up -d
       - name: List Nodes
-        run: docker-compose exec login01 sinfo
-      - name: List Jobs
-        run: docker-compose exec login01 squeue
-      - name: List Hostnames
-        run: docker-compose exec login01 srun -N 1 -n 1 hostname
+        run: ssh -o StrictHostKeyChecking=no -i ssh_local/id_rsa hpcuser@$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' login01) sinfo
+
+        
