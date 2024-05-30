@@ -46,11 +46,11 @@ with compose_file.open('r') as nt:
     compose = yaml.safe_load(nt)
 
 
-for node_num in range(10):
+for node_num in range(5):
     if node_num > 100:
         print("Too many nodes!")
         continue
-    node = node_template.format(nodename=f"node{node_num:02}")
+    node = node_template.format(nodename=f"node{node_num+1:02}")
     compose['services'].update(yaml.safe_load(node))
 
 with open('docker-compose.yml', 'w') as outfile:
