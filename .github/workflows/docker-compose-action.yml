@@ -5,9 +5,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
       - name: Configure Slurm
         run: python -m pip install pyyaml && python create_slurm.py
       - name: Generate ssh keys
@@ -15,8 +12,6 @@ jobs:
       - name: Build Slurm
         run: SLURM_TAG=slurm-23-11-6-1 IMAGE_TAG=23.11.6 docker-compose build
       - name: Boot Slurm
-        run: SLURM_TAG=slurm-23-11-6-1 IMAGE_TAG=23.11.6 docker-compose up -d && sleep 30
-      - name: List Nodes
-        run: ssh -o StrictHostKeyChecking=no -i ssh_local/id_rsa hpcuser@$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' login01) sinfo
+        run: SLURM_TAG=slurm-23-11-6-1 IMAGE_TAG=23.11.6 docker-compose up -d && sleep 10 && ssh -o StrictHostKeyChecking=no -i ssh_local/id_rsa hpcuser@$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' login01) sinfo
 
         
