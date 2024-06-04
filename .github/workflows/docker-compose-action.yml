@@ -5,25 +5,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: sinfo
       - uses: adambirds/docker-compose-action@v1.3.0
         with:
           compose-file: "./docker-compose.yml"
           test-container: login01
           test-command: "sinfo"
-      - name: squeue
       - uses: adambirds/docker-compose-action@v1.3.0
         with:
           compose-file: "./docker-compose.yml"
           test-container: login01
           test-command: "squeue"
-      - name: srun 1
       - uses: adambirds/docker-compose-action@v1.3.0
         with:
           compose-file: "./docker-compose.yml"
           test-container: login01
           test-command: "srun -N 1 -n 1 hostname"
-      - name: srun 2
       - uses: adambirds/docker-compose-action@v1.3.0
         with:
           compose-file: "./docker-compose.yml"
