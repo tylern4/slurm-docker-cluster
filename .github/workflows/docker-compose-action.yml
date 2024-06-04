@@ -4,8 +4,11 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: adambirds/docker-compose-action@v1.3.0
+        env:
+          SLURM_TAG: slurm-23-11-6-1
+          IMAGE_TAG: 23.11.6
         with:
           compose-file: "./docker-compose.yml"
           test-container: login01
