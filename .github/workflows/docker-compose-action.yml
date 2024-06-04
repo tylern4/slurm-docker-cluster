@@ -7,11 +7,9 @@ jobs:
       - uses: actions/checkout@v4
       - name: Configure Slurm
         run: python -m pip install pyyaml && python create_slurm.py
-      - name: Generate ssh keys
-        run: ./gen_ssh_keys.sh
-      - name: Build Slurm
-        run: SLURM_TAG=slurm-23-11-6-1 IMAGE_TAG=23.11.6 docker-compose build
-      - name: Boot Slurm
-        run: SLURM_TAG=slurm-23-11-6-1 IMAGE_TAG=23.11.6 docker-compose up -d && sleep 10 && ssh -o StrictHostKeyChecking=no -i ssh_local/id_rsa hpcuser@$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' login01) sinfo
-
-        
+      - name: Start containers
+      - uses: adambirds/docker-compose-action@v1.3.0
+        with:
+          compose-file: "./docker-compose.yml"
+          test-container: login01
+          test-command: "sinfo"
