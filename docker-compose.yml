@@ -15,10 +15,6 @@ services:
 
   slurmdbd:
     image: tylern4/slurm-docker-cluster:23.11.6
-    build:
-      context: .
-      args:
-        SLURM_TAG: ${SLURM_TAG:-slurm-23.11.6-6-1}
     command: ["slurmdbd"]
     container_name: slurmdbd
     hostname: slurmdbd
