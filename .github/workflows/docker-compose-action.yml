@@ -26,10 +26,7 @@ jobs:
   slurm-testing:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: sinfo
+      - uses: actions/checkout@v4
       - uses: tylern4/docker-compose-action@v1.4.0
         with:
           compose-file: "./docker-compose.yml"
