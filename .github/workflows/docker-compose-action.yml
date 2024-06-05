@@ -26,6 +26,8 @@ jobs:
           push: true
           load: true
           tags: ghcr.io/${{ github.repository_owner }}/slurm:slurm-21-08-6-1
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
       
       - name: Inspect
         run: |
