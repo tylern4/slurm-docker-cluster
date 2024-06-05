@@ -5,31 +5,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: tylern4/docker-compose-action@v1.4.0
+      - uses: adambirds/docker-compose-action@v1.3.0
         with:
           compose-file: "./docker-compose.yml"
           test-container: login01
           test-command: "sinfo"
           
-      - uses: tylern4/docker-compose-action@v1.4.0
+      - uses: adambirds/docker-compose-action@v1.3.0
         with:
           compose-file: "./docker-compose.yml"
           test-container: login01
           test-command: "squeue"
           
-      - uses: tylern4/docker-compose-action@v1.4.0
+      - uses: adambirds/docker-compose-action@v1.3.0
         with:
           compose-file: "./docker-compose.yml"
           test-container: login01
           test-command: "srun -N 1 -n 1 hostname"
           
-      - uses: tylern4/docker-compose-action@v1.4.0
+      - uses: adambirds/docker-compose-action@v1.3.0
         with:
           compose-file: "./docker-compose.yml"
           test-container: login01
           test-command: "srun -N 2 -n 2 hostname"
           
-      - uses: tylern4/docker-compose-action@v1.4.0
+      - uses: adambirds/docker-compose-action@v1.3.0
         with:
           compose-file: "./docker-compose.yml"
           test-container: login01
