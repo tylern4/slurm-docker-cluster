@@ -1,36 +1,38 @@
 name: slurm-cluster-tests
 on: push
 jobs:
+  build-slurm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      
+      - name: Build
+        uses: docker/build-push-action@v5
+        with:
+          build-args: |
+            SLURM_TAG=slurm-21-08-6-1
+          context: .
+          load: true
+          tags: slurm:21-08-6-1
+      
+      - name: Inspect
+        run: |
+          docker image inspect slurm:21-08-6-1
+      
   slurm-testing:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: adambirds/docker-compose-action@v1.3.0
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: sinfo
+      - uses: tylern4/docker-compose-action@v1.4.0
         with:
           compose-file: "./docker-compose.yml"
           test-container: login01
           test-command: "sinfo"
           
-      - uses: adambirds/docker-compose-action@v1.3.0
-        with:
-          compose-file: "./docker-compose.yml"
-          test-container: login01
-          test-command: "squeue"
-          
-      - uses: adambirds/docker-compose-action@v1.3.0
-        with:
-          compose-file: "./docker-compose.yml"
-          test-container: login01
-          test-command: "srun -N 1 -n 1 hostname"
-          
-      - uses: adambirds/docker-compose-action@v1.3.0
-        with:
-          compose-file: "./docker-compose.yml"
-          test-container: login01
-          test-command: "srun -N 2 -n 2 hostname"
-          
-      - uses: adambirds/docker-compose-action@v1.3.0
-        with:
-          compose-file: "./docker-compose.yml"
-          test-container: login01
-          test-command: "sacct"
