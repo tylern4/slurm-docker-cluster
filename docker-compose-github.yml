@@ -1,3 +1,5 @@
+version: "2.2"
+
 services:
   mysql:
     image: mariadb:10.10
@@ -12,11 +14,7 @@ services:
       - var_lib_mysql:/var/lib/mysql
 
   slurmdbd:
-    image: slurm-docker-cluster:${IMAGE_TAG:-23.11.6}
-    build:
-      context: .
-      args:
-        SLURM_TAG: ${SLURM_TAG:-slurm-23.11.6-6-1}
+    image: ghcr.io/${GIT_HUB_USERNAME:-tylern4}/slurm:slurm-${SLURM_VERSION:-21-08-6-1}
     command: ["slurmdbd"]
     container_name: slurmdbd
     hostname: slurmdbd
@@ -30,7 +28,7 @@ services:
       - mysql
 
   slurmctld:
-    image: slurm-docker-cluster:${IMAGE_TAG:-23.11.6}
+    image: ghcr.io/${GIT_HUB_USERNAME:-tylern4}/slurm:slurm-${SLURM_VERSION:-21-08-6-1}
     command: ["slurmctld"]
     container_name: slurmctld
     hostname: slurmctld
@@ -47,7 +45,7 @@ services:
       - "slurmdbd"
 
   login01:
-    image: slurm-docker-cluster:${IMAGE_TAG:-23.11.6}
+    image: ghcr.io/${GIT_HUB_USERNAME:-tylern4}/slurm:slurm-${SLURM_VERSION:-21-08-6-1}
     command: ["slurmd"]
     hostname: login01
     container_name: login01
@@ -62,6 +60,42 @@ services:
     expose:
       - "6818"
       - "22"
+    depends_on:
+      - "slurmctld"
+
+  node01:
+    image: ghcr.io/${GIT_HUB_USERNAME:-tylern4}/slurm:slurm-${SLURM_VERSION:-21-08-6-1}
+    command: ["slurmd"]
+    hostname: node01
+    container_name: node01
+    volumes:
+      - etc_munge:/etc/munge
+      - etc_slurm:/etc/slurm
+      - slurm_jobdir:/data
+      - var_log_slurm:/var/log/slurm
+      - ./ssh:/home/hpcuser/.ssh
+      - ./slurm.conf:/etc/slurm/slurm.conf:ro
+      - ./slurmdbd.conf:/etc/slurm/slurmdbd.conf:ro
+    expose:
+      - "6818"
+    depends_on:
+      - "slurmctld"
+ 
+  node02:
+    image: ghcr.io/${GIT_HUB_USERNAME:-tylern4}/slurm:slurm-${SLURM_VERSION:-21-08-6-1}
+    command: ["slurmd"]
+    hostname: node02
+    container_name: node02
+    volumes:
+      - etc_munge:/etc/munge
+      - etc_slurm:/etc/slurm
+      - slurm_jobdir:/data
+      - var_log_slurm:/var/log/slurm
+      - ./ssh:/home/hpcuser/.ssh
+      - ./slurm.conf:/etc/slurm/slurm.conf:ro
+      - ./slurmdbd.conf:/etc/slurm/slurmdbd.conf:ro
+    expose:
+      - "6818"
     depends_on:
       - "slurmctld"
 
