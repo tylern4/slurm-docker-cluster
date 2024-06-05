@@ -1,13 +1,10 @@
 FROM rockylinux:8
 
-LABEL org.opencontainers.image.source="https://github.com/giovtorres/slurm-docker-cluster" \
+LABEL org.opencontainers.image.source="https://github.com/tylern4/slurm-docker-cluster" \
       org.opencontainers.image.title="slurm-docker-cluster" \
       org.opencontainers.image.description="Slurm Docker cluster on Rocky Linux 8" \
       org.label-schema.docker.cmd="docker-compose up -d" \
-      maintainer="Giovanni Torres"
-
-ARG SLURM_TAG=slurm-21-08-6-1
-ARG GOSU_VERSION=1.11
+      maintainer="tylern@nersc"
 
 RUN set -ex \
     && yum makecache \
@@ -41,11 +38,15 @@ RUN set -ex \
 
 RUN ssh-keygen -A
 RUN groupadd -g 1000 hpcusers && useradd -rm -d /home/hpcuser -s /bin/bash -g 1000 -u 1000 hpcuser
-
 RUN alternatives --set python /usr/bin/python3
-
 RUN pip3 install Cython nose
 
+ARG STRESS_NG_VER="V0.17.08"
+RUN git clone -j 4 -b ${STRESS_NG_VER} --single-branch --depth=1 https://github.com/ColinIanKing/stress-ng.git \
+	&& cd stress-ng \
+	&& make -j install 
+
+ARG GOSU_VERSION=1.11
 RUN set -ex \
     && wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-amd64" \
     && wget -O /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-amd64.asc" \
@@ -56,6 +57,7 @@ RUN set -ex \
     && chmod +x /usr/local/bin/gosu \
     && gosu nobody true
 
+ARG SLURM_TAG=slurm-23-11-6-1
 RUN set -x \
     && git clone -b ${SLURM_TAG} --single-branch --depth=1 https://github.com/SchedMD/slurm.git \
     && pushd slurm \
@@ -100,9 +102,3 @@ COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 
 CMD ["slurmdbd"]
-
-ARG STRESS_NG_VER="V0.17.08"
-RUN git clone -j 4 -b ${STRESS_NG_VER} --single-branch --depth=1 https://github.com/ColinIanKing/stress-ng.git \
-	&& cd stress-ng \
-	&& make -j install 
-	
