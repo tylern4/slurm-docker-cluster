@@ -24,6 +24,7 @@ jobs:
           docker image inspect slurm:21-08-6-1
       
   slurm-testing:
+    needs: build-slurm
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
