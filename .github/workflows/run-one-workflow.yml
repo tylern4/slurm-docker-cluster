@@ -45,11 +45,20 @@ jobs:
         run: |
           python3 -m pip install pyyaml
           python3 create_slurm.py ghcr.io/${{ github.repository_owner }}/slurm:${{ inputs.version }}-${{ inputs.os }}
-          
+      - name: Save compose yml
+        uses: actions/cache@v3
+        with:
+          path: ./docker-compose-workflow.yml
+          key: compose-workflow-${{ inputs.version }}-${{ inputs.os }}
+
   slurm-testing:
     needs: build-slurm
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/cache@v3
+      with:
+        path: ./docker-compose-workflow.yml
+        key: compose-workflow-${{ inputs.version }}-${{ inputs.os }}
       - uses: actions/checkout@v4
       - uses: tylern4/docker-compose-action@v1.4.0
         with:
