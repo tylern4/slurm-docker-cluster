@@ -45,26 +45,26 @@ jobs:
         run: |
           python3 -m pip install pyyaml
           python3 create_slurm.py ghcr.io/${{ github.repository_owner }}/slurm:${{ inputs.version }}-${{ inputs.os }}
+          
+  slurm-testing:
+    needs: build-slurm
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: tylern4/docker-compose-action@v1.4.0
+        with:
+          compose-file: "./docker-compose-workflow.yml"
+          test-container: login01
+          test-command: "sinfo"
 
-    slurm-testing:
-      needs: build-slurm
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v4
-        - uses: tylern4/docker-compose-action@v1.4.0
-          with:
-            compose-file: "./docker-compose-workflow.yml"
-            test-container: login01
-            test-command: "sinfo"
+      - uses: tylern4/docker-compose-action@v1.4.0
+        with:
+          compose-file: "./docker-compose-workflow.yml"
+          test-container: login01
+          test-command: "srun -N 1 -n 1 hostname"
 
-        - uses: tylern4/docker-compose-action@v1.4.0
-          with:
-            compose-file: "./docker-compose-workflow.yml"
-            test-container: login01
-            test-command: "srun -N 1 -n 1 hostname"
-
-        - uses: tylern4/docker-compose-action@v1.4.0
-          with:
-            compose-file: "./docker-compose-workflow.yml"
-            test-container: login01
-            test-command: "sacct"
+      - uses: tylern4/docker-compose-action@v1.4.0
+        with:
+          compose-file: "./docker-compose-workflow.yml"
+          test-container: login01
+          test-command: "sacct"
