@@ -48,18 +48,18 @@ jobs:
       - name: Save compose yml
         uses: actions/cache/save@v4
         with:
-          path: ./docker-compose-workflow.yml
+          path: docker-compose-workflow.yml
           key: compose-workflow-${{ inputs.version }}-${{ inputs.os }}
 
   slurm-testing:
     needs: build-slurm
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - uses: actions/cache/restore@v4
         with:
-          path: ./docker-compose-workflow.yml
+          path: docker-compose-workflow.yml
           key: compose-workflow-${{ inputs.version }}-${{ inputs.os }}
-      - uses: actions/checkout@v4
       - uses: tylern4/docker-compose-action@v1.4.0
         with:
           compose-file: "./docker-compose-workflow.yml"
