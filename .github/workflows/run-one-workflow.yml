@@ -55,10 +55,10 @@ jobs:
     needs: build-slurm
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/cache@v3
-      with:
-        path: ./docker-compose-workflow.yml
-        key: compose-workflow-${{ inputs.version }}-${{ inputs.os }}
+      - uses: actions/cache@v3
+        with:
+          path: ./docker-compose-workflow.yml
+          key: compose-workflow-${{ inputs.version }}-${{ inputs.os }}
       - uses: actions/checkout@v4
       - uses: tylern4/docker-compose-action@v1.4.0
         with:
