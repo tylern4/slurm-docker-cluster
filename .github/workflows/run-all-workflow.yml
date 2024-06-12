@@ -8,5 +8,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        slurm: [slurm-24-05-0-1, slurm-21-08-6-1, slurm-23-11-6-1]
-    uses: ./.github/workflows/run-one-workflow.yml@nersc-minislurm
+        version: ["slurm-24-05-0-1", "slurm-21-08-6-1", "slurm-23-11-6-1"]
+    uses: ./.github/workflows/run-one-workflow.yml
+    with:
+      version: ${{ matrix.version }}
+    secrets: inherit
