@@ -5,6 +5,9 @@ on:
       version: # the variable you can use in place of a matrix
         required: true
         type: string
+      os: # the variable you can use in place of a matrix
+        required: true
+        type: string
 jobs:
   build-slurm:
     runs-on: ubuntu-latest
