@@ -6,6 +6,6 @@ build-job:       # This job runs in the build stage, which runs first.
   image:
       name: docker/compose
   script:
-    - docker compose build -t slurm
+    - docker build -t slurm .
     - echo "Compile complete."
 
