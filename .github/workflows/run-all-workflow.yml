@@ -9,7 +9,9 @@ jobs:
       fail-fast: false
       matrix:
         version: ["slurm-24-05-0-1", "slurm-21-08-6-1", "slurm-23-11-6-1"]
+        os: ["opensuse", "rockylinux"]
     uses: ./.github/workflows/run-one-workflow.yml
     with:
       version: ${{ matrix.version }}
+      os: ${{ matrix.os }}
     secrets: inherit
