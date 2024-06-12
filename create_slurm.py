@@ -1,5 +1,4 @@
 import sys
-from tkinter import image_names
 import yaml
 import json
 from pathlib import Path
