@@ -3,9 +3,9 @@ name: Run One
 on:
   workflow_call:
     inputs:
-      version: # the variable you can use in place of a matrix
+      slurm: # the variable you can use in place of a matrix
         required: true
-        type: number
+        type: string
 
 jobs:
   build-slurm:
