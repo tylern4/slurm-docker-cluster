@@ -28,18 +28,18 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           build-args: |
-            SLURM_TAG=${{ fromJSON(inputs.version) }}
+            SLURM_TAG=${{ inputs.slurm }}
           context: .
           push: true
           load: true
-          tags: ghcr.io/${{ github.repository_owner }}/slurm:${{ fromJSON(inputs.version) }}
+          tags: ghcr.io/${{ github.repository_owner }}/slurm:${{ inputs.slurm }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
       
       - name: Inspect
         run: |
-          docker image inspect ghcr.io/${{ github.repository_owner }}/slurm:${{ fromJSON(inputs.version) }}
+          docker image inspect ghcr.io/${{ github.repository_owner }}/slurm:${{ inputs.slurm }}
   job1:
     runs-on: ubuntu-latest
     steps:
-      - run: echo 'job1 version ${{ fromJSON(inputs.version) }}'
+      - run: echo 'job1 version ${{ inputs.slurm }}'
