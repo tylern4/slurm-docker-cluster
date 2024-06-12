@@ -92,5 +92,6 @@ RUN set -x \
     && chmod 600 /etc/slurm/slurmdbd.conf
 
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+COPY test_slurm.sh /usr/bin/test_slurm.sh
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 CMD ["slurmdbd"]
