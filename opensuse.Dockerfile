@@ -38,7 +38,7 @@ RUN set -ex \
 
 RUN ssh-keygen -A
 
-# RUN groupadd -g 1000 hpcusers && useradd -rm -d /home/hpcuser -s /bin/bash -g 1000 -u 1000 hpcuser
+RUN groupadd -g 1000 hpcusers && useradd -rm -d /home/hpcuser -s /bin/bash -g 1000 -u 1000 hpcuser
 RUN groupadd -g 65534 nobody && useradd -r -s /bin/false -g 65534 -u 65534 nobody
 
 RUN pip3 install Cython nose
