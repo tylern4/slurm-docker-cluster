@@ -9,47 +9,13 @@ jobs:
       fail-fast: false
       matrix:
         version: [
-                  "slurm-21-08-0-1",
-                  "slurm-21-08-1-1",
-                  "slurm-21-08-2-1",
-                  "slurm-21-08-3-1",
-                  "slurm-21-08-4-1",
-                  "slurm-21-08-5-1",
-                  "slurm-21-08-6-1",
-                  "slurm-21-08-7-1",
-                  "slurm-21-08-8-1",
                   "slurm-21-08-8-2",
-                  "slurm-22-05-0-1",
-                  "slurm-22-05-1-1",
-                  "slurm-22-05-10-1",
                   "slurm-22-05-11-1",
-                  "slurm-22-05-2-1",
-                  "slurm-22-05-3-1",
-                  "slurm-22-05-4-1",
-                  "slurm-22-05-5-1",
-                  "slurm-22-05-6-1",
-                  "slurm-22-05-7-1",
-                  "slurm-22-05-8-1",
-                  "slurm-22-05-9-1",
-                  "slurm-23-02-0-1",
-                  "slurm-23-02-1-1",
-                  "slurm-23-02-2-1",
-                  "slurm-23-02-3-1",
-                  "slurm-23-02-4-1",
-                  "slurm-23-02-5-1",
-                  "slurm-23-02-6-1",
                   "slurm-23-02-7-1",
-                  "slurm-23-11-0-1",
-                  "slurm-23-11-1-1",
-                  "slurm-23-11-2-1",
-                  "slurm-23-11-3-1",
-                  "slurm-23-11-4-1",
-                  "slurm-23-11-5-1",
-                  "slurm-23-11-6-1",
                   "slurm-23-11-7-1",
                   "slurm-24-05-0-1"
                 ]
-        os: ["opensuse", "rockylinux"]
+        os: ["opensuse", "rockylinux", "rockylinux9"]
     uses: ./.github/workflows/run-one-workflow.yml
     with:
       version: ${{ matrix.version }}
