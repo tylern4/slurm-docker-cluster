@@ -15,8 +15,8 @@ test-slurm:
     - slurm
   stage: test
   script:
-    - SLURM_VERSION=$(git rev-parse --short HEAD) docker-compose -f docker-compose-github.yml up -d
+    - SLURM_VERSION=$(git rev-parse --short HEAD) docker-compose -f docker-compose-gitlab.yml up -d
     - docker ps -a
     - docker exec -it login01 sinfo
     - docker exec -it login01 /usr/local/bin/slurm_tests.sh
-    - SLURM_VERSION=$(git rev-parse --short HEAD) docker-compose -f docker-compose-github.yml down --remove-orphans -v
+    - SLURM_VERSION=$(git rev-parse --short HEAD) docker-compose -f docker-compose-gitlab.yml down --remove-orphans -v
