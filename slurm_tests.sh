@@ -1,5 +1,9 @@
 #!/bin/bash
 
+set -e
+
+cd /data
+
 echo "Testing sinfo"
 sinfo
 
