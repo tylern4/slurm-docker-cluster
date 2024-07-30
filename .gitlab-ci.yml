@@ -1,8 +1,6 @@
 stages:
   - build
-  - compose-up
   - test
-  - compose-down
 
 build-job:
   tags:
@@ -12,24 +10,13 @@ build-job:
     - docker build -t slurm:$(git rev-parse --short HEAD) .
     - echo "Compile complete."
 
-compose-up-job:
-  tags:
-    - slurm
-  stage: compose-up
-  script:
-    - SLURM_VERSION=$(git rev-parse --short HEAD) docker-compose -f docker-compose-github.yml up -d
-
-compose-up-job:
+test-slurm:
   tags:
     - slurm
   stage: test
   script:
+    - SLURM_VERSION=$(git rev-parse --short HEAD) docker-compose -f docker-compose-github.yml up -d
     - docker ps -a
-
-
-compose-down-job:
-  tags:
-    - slurm
-  stage: compose-down
-  script:
+    - docker exec -it login01 sinfo
+    - docker exec -it login01 /usr/local/bin/slurm_tests.sh
     - SLURM_VERSION=$(git rev-parse --short HEAD) docker-compose -f docker-compose-github.yml down --remove-orphans -v
