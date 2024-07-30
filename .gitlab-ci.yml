@@ -17,5 +17,5 @@ test-slurm:
     - SLURM_VERSION=$(git rev-parse --short HEAD) docker-compose -f docker-compose-gitlab.yml up -d
     - docker ps -a
     - docker exec login01 sinfo
-    - docker exec login01 /usr/local/bin/slurm_tests.sh
+    - docker exec -u hpcuser login01 /usr/local/bin/slurm_tests.sh
     - SLURM_VERSION=$(git rev-parse --short HEAD) docker-compose -f docker-compose-gitlab.yml down --remove-orphans -v
