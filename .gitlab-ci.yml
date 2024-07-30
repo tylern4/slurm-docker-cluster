@@ -7,7 +7,7 @@ build-job:
     - slurm
   stage: build
   script:
-    - docker build -t slurm:$(git rev-parse --short HEAD) -f Dokerfiles/opensuse.Dockerfile .
+    - docker build -t slurm:$(git rev-parse --short HEAD) -f Dockerfiles/opensuse.Dockerfile .
 
 test-slurm:
   tags:
