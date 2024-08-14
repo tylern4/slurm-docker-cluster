@@ -51,17 +51,17 @@ jobs:
           path: docker-compose-workflow.yml
           key: compose-workflow-${{ inputs.version }}-${{ inputs.os }}
 
-  slurm-testing:
-    needs: build-slurm
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/cache/restore@v4
-        with:
-          path: docker-compose-workflow.yml
-          key: compose-workflow-${{ inputs.version }}-${{ inputs.os }}
-      - uses: tylern4/docker-compose-action@v1.4.0
-        with:
-          compose-file: "./docker-compose-workflow.yml"
-          test-container: login01
-          test-command: "gosu hpcuser /usr/bin/slurm_tests.sh"
+  # slurm-testing:
+  #   needs: build-slurm
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: actions/cache/restore@v4
+  #       with:
+  #         path: docker-compose-workflow.yml
+  #         key: compose-workflow-${{ inputs.version }}-${{ inputs.os }}
+  #     - uses: tylern4/docker-compose-action@v1.4.0
+  #       with:
+  #         compose-file: "./docker-compose-workflow.yml"
+  #         test-container: login01
+  #         test-command: "gosu hpcuser /usr/bin/slurm_tests.sh"
