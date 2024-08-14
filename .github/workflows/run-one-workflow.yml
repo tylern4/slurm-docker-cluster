@@ -64,4 +64,4 @@ jobs:
         with:
           compose-file: "./docker-compose-workflow.yml"
           test-container: login01
-          test-command: "gosu hpcuser /usr/bin/test_slurm.sh"
+          test-command: "gosu hpcuser /usr/bin/slurm_tests.sh"
