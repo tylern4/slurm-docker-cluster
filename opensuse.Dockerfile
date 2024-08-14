@@ -33,6 +33,7 @@ RUN set -ex \
        vim-enhanced \
        http-parser-devel \
        libjson-c-devel \
+       podman \
     && zypper clean all \
     && rm -rf /var/cache/zypper
 

@@ -34,6 +34,8 @@ RUN set -ex \
        vim-enhanced \
        http-parser-devel \
        json-c-devel \
+       apptainer-suid \
+       podman \
     && dnf clean all \
     && rm -rf /var/cache/dnf
 
@@ -41,11 +43,6 @@ RUN ssh-keygen -A
 RUN groupadd -g 1000 hpcusers && useradd -rm -d /home/hpcuser -s /bin/bash -g 1000 -u 1000 hpcuser
 # RUN alternatives --set python /usr/bin/python3
 RUN pip3 install Cython nose
-
-ARG STRESS_NG_VER="V0.17.08"
-RUN git clone -j 4 -b ${STRESS_NG_VER} --single-branch --depth=1 https://github.com/ColinIanKing/stress-ng.git \
-	&& cd stress-ng \
-	&& make -j install 
 
 ARG GOSU_VERSION=1.11
 RUN set -ex \

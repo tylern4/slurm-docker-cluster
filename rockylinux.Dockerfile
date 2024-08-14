@@ -10,6 +10,7 @@ RUN set -ex \
     && yum makecache \
     && yum -y update \
     && yum -y install dnf-plugins-core \
+    && yum -y install epel-release \
     && yum config-manager --set-enabled powertools \
     && yum -y install \
        wget \
@@ -33,6 +34,8 @@ RUN set -ex \
        vim-enhanced \
        http-parser-devel \
        json-c-devel \
+       apptainer-suid \
+       podman \
     && yum clean all \
     && rm -rf /var/cache/yum
 
@@ -40,11 +43,6 @@ RUN ssh-keygen -A
 RUN groupadd -g 1000 hpcusers && useradd -rm -d /home/hpcuser -s /bin/bash -g 1000 -u 1000 hpcuser
 RUN alternatives --set python /usr/bin/python3
 RUN pip3 install Cython nose
-
-ARG STRESS_NG_VER="V0.17.08"
-RUN git clone -j 4 -b ${STRESS_NG_VER} --single-branch --depth=1 https://github.com/ColinIanKing/stress-ng.git \
-	&& cd stress-ng \
-	&& make -j install 
 
 ARG GOSU_VERSION=1.11
 RUN set -ex \
@@ -98,8 +96,9 @@ RUN set -x \
     && chown slurm:slurm /etc/slurm/slurmdbd.conf \
     && chmod 600 /etc/slurm/slurmdbd.conf
 
+COPY slurm_tests.sh /usr/local/bin/slurm_tests.sh
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-COPY test_slurm.sh /usr/bin/test_slurm.sh
+RUN chmod +x /usr/local/bin/*.sh
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 
 CMD ["slurmdbd"]
