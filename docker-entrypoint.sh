@@ -12,9 +12,12 @@ echo "---> Waiting for slurmctld to become active before starting slurmd..."
 echo "---> Starting the Slurm Node Daemon (slurmd) ..."
 exec /usr/sbin/slurmd -Dvvv > slurmd.log 2>&1 &
 
-cd /home/hpcuser
 if [ "$#" -eq 0 ]; then
+    cd /home/hpcuser
     exec gosu hpcuser /bin/bash -l
 fi
 echo "---> Running user command '${@}'"
+tail -f slurmctld.log &
+tail -f slurmd.log &
 exec gosu hpcuser "$@"
+

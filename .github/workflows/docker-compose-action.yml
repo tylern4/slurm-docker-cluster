@@ -37,5 +37,5 @@ jobs:
       - name: Test
         run: |
           docker run --rm -h node01 ghcr.io/${{ github.repository_owner }}/slurm-standalone:slurm-24-05-0-1 sinfo
-          docker run --rm -h node01 ghcr.io/${{ github.repository_owner }}/slurm-standalone:slurm-24-05-0-1 srun -N 1 -n 1 lscpu
           docker run --rm -h node01 ghcr.io/${{ github.repository_owner }}/slurm-standalone:slurm-24-05-0-1 squeue
+          docker run --rm -h node01 ghcr.io/${{ github.repository_owner }}/slurm-standalone:slurm-24-05-0-1 /usr/local/bin/slurm_tests.sh
