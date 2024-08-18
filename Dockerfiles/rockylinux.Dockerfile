@@ -85,6 +85,7 @@ RUN set -x \
     && /sbin/create-munge-key
 
 COPY slurm/slurm.conf /etc/slurm/slurm.conf
+COPY slurm/cgroup.conf /etc/slurm/cgroup.conf
 RUN set -x \
     && chmod -R 777 /data
 
