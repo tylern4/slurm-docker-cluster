@@ -1,10 +1,10 @@
 FROM rockylinux:8
 
 LABEL org.opencontainers.image.source="https://github.com/tylern4/slurm-docker-cluster" \
-      org.opencontainers.image.title="slurm-docker-cluster" \
-      org.opencontainers.image.description="Slurm Docker cluster on Rocky Linux 8" \
-      org.label-schema.docker.cmd="docker-compose up -d" \
-      maintainer="tylern@nersc"
+    org.opencontainers.image.title="slurm-docker-cluster" \
+    org.opencontainers.image.description="Slurm Docker cluster on Rocky Linux 8" \
+    org.label-schema.docker.cmd="docker run --rm -it slurm-standalone" \
+    maintainer="tylern@nersc"
 
 RUN set -ex \
     && yum makecache \
@@ -12,27 +12,27 @@ RUN set -ex \
     && yum -y install dnf-plugins-core \
     && yum config-manager --set-enabled powertools \
     && yum -y install \
-       wget \
-       openssh-server \
-       bzip2 \
-       perl \
-       gcc \
-       gcc-c++\
-       git \
-       gnupg \
-       make \
-       munge \
-       munge-devel \
-       python3-devel \
-       python3-pip \
-       python3 \
-       mariadb-server \
-       mariadb-devel \
-       psmisc \
-       bash-completion \
-       vim-enhanced \
-       http-parser-devel \
-       json-c-devel \
+    wget \
+    openssh-server \
+    bzip2 \
+    perl \
+    gcc \
+    gcc-c++\
+    git \
+    gnupg \
+    make \
+    munge \
+    munge-devel \
+    python3-devel \
+    python3-pip \
+    python3 \
+    mariadb-server \
+    mariadb-devel \
+    psmisc \
+    bash-completion \
+    vim-enhanced \
+    http-parser-devel \
+    json-c-devel \
     && yum clean all \
     && rm -rf /var/cache/yum
 
@@ -40,11 +40,6 @@ RUN ssh-keygen -A
 RUN groupadd -g 1000 hpcusers && useradd -rm -d /home/hpcuser -s /bin/bash -g 1000 -u 1000 hpcuser
 RUN alternatives --set python /usr/bin/python3
 RUN pip3 install Cython nose
-
-ARG STRESS_NG_VER="V0.17.08"
-RUN git clone -j 4 -b ${STRESS_NG_VER} --single-branch --depth=1 https://github.com/ColinIanKing/stress-ng.git \
-	&& cd stress-ng \
-	&& make -j install 
 
 ARG GOSU_VERSION=1.11
 RUN set -ex \
@@ -57,50 +52,43 @@ RUN set -ex \
     && chmod +x /usr/local/bin/gosu \
     && gosu nobody true
 
-ARG SLURM_TAG=slurm-23-11-6-1
+ARG SLURM_TAG=slurm-24-05-0-1
 RUN set -x \
     && git clone -b ${SLURM_TAG} --single-branch --depth=1 https://github.com/SchedMD/slurm.git \
     && pushd slurm \
     && ./configure --enable-debug --prefix=/usr --sysconfdir=/etc/slurm \
-        --with-mysql_config=/usr/bin  --libdir=/usr/lib64 \
+    --with-mysql_config=/usr/bin  --libdir=/usr/lib64 \
     && make -j install \
     && install -D -m644 etc/cgroup.conf.example /etc/slurm/cgroup.conf.example \
     && install -D -m644 etc/slurm.conf.example /etc/slurm/slurm.conf.example \
-    && install -D -m644 etc/slurmdbd.conf.example /etc/slurm/slurmdbd.conf.example \
     && install -D -m644 contribs/slurm_completion_help/slurm_completion.sh /etc/profile.d/slurm_completion.sh \
     && popd \
     && rm -rf slurm \
     && groupadd -r --gid=990 slurm \
     && useradd -r -g slurm --uid=990 slurm \
     && mkdir -p /etc/sysconfig/slurm \
-        /var/spool/slurmd \
-        /var/run/slurmd \
-        /var/run/slurmdbd \
-        /var/lib/slurmd \
-        /var/log/slurm \
-        /data \
+    /var/spool/slurmd \
+    /var/run/slurmd \
+    /var/lib/slurmd \
+    /var/log/slurm \
+    /data \
     && touch /var/lib/slurmd/node_state \
-        /var/lib/slurmd/front_end_state \
-        /var/lib/slurmd/job_state \
-        /var/lib/slurmd/resv_state \
-        /var/lib/slurmd/trigger_state \
-        /var/lib/slurmd/assoc_mgr_state \
-        /var/lib/slurmd/assoc_usage \
-        /var/lib/slurmd/qos_usage \
-        /var/lib/slurmd/fed_mgr_state \
+    /var/lib/slurmd/front_end_state \
+    /var/lib/slurmd/job_state \
+    /var/lib/slurmd/resv_state \
+    /var/lib/slurmd/trigger_state \
+    /var/lib/slurmd/assoc_mgr_state \
+    /var/lib/slurmd/assoc_usage \
+    /var/lib/slurmd/qos_usage \
+    /var/lib/slurmd/fed_mgr_state \
     && chown -R slurm:slurm /var/*/slurm* \
     && /sbin/create-munge-key
 
-COPY slurm.conf /etc/slurm/slurm.conf
-COPY slurmdbd.conf /etc/slurm/slurmdbd.conf
+COPY slurm/slurm.conf /etc/slurm/slurm.conf
 RUN set -x \
-    && chmod -R 777 /data \
-    && chown slurm:slurm /etc/slurm/slurmdbd.conf \
-    && chmod 600 /etc/slurm/slurmdbd.conf
+    && chmod -R 777 /data
 
 COPY slurm_tests.sh /usr/local/bin/slurm_tests.sh
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/*.sh
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
-
-CMD ["slurmdbd"]
