@@ -1,44 +1,46 @@
-FROM rockylinux:8
+FROM rockylinux:9.3
 
 LABEL org.opencontainers.image.source="https://github.com/tylern4/slurm-docker-cluster" \
-    org.opencontainers.image.title="slurm-docker-cluster" \
-    org.opencontainers.image.description="Slurm Docker cluster on Rocky Linux 8" \
-    org.label-schema.docker.cmd="docker run --rm -it slurm-standalone" \
-    maintainer="tylern@nersc"
+      org.opencontainers.image.title="slurm-docker-cluster" \
+      org.opencontainers.image.description="Slurm Docker cluster on Rocky Linux 8" \
+      org.label-schema.docker.cmd="docker-compose up -d" \
+      maintainer="tylern@nersc"
 
 RUN set -ex \
-    && yum makecache \
-    && yum -y update \
-    && yum -y install dnf-plugins-core \
-    && yum config-manager --set-enabled powertools \
-    && yum -y install \
-    wget \
-    openssh-server \
-    bzip2 \
-    perl \
-    gcc \
-    gcc-c++\
-    git \
-    gnupg \
-    make \
-    munge \
-    munge-devel \
-    python3-devel \
-    python3-pip \
-    python3 \
-    mariadb-server \
-    mariadb-devel \
-    psmisc \
-    bash-completion \
-    vim-enhanced \
-    http-parser-devel \
-    json-c-devel \
-    && yum clean all \
-    && rm -rf /var/cache/yum
+    && dnf makecache \
+    && dnf -y update \
+    && dnf install -y epel-release \
+    && dnf -y install dnf-plugins-core \
+    && dnf config-manager --set-enabled crb \
+    && dnf -y install \
+       wget \
+       openssh-server \
+       bzip2 \
+       perl \
+       gcc \
+       gcc-c++\
+       git \
+       gnupg \
+       make \
+       munge \
+       munge-devel \
+       python3-devel \
+       python3-pip \
+       python3 \
+       mariadb-server \
+       mariadb-devel \
+       psmisc \
+       bash-completion \
+       vim-enhanced \
+       http-parser-devel \
+       json-c-devel \
+       apptainer-suid \
+       podman \
+    && dnf clean all \
+    && rm -rf /var/cache/dnf
 
 RUN ssh-keygen -A
 RUN groupadd -g 1000 hpcusers && useradd -rm -d /home/hpcuser -s /bin/bash -g 1000 -u 1000 hpcuser
-RUN alternatives --set python /usr/bin/python3
 RUN pip3 install Cython nose
 
 ARG GOSU_VERSION=1.11
