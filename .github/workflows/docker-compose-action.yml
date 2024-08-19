@@ -36,6 +36,7 @@ jobs:
 
       - name: Inspect
         run: |
+          docker pull ghcr.io/${{ github.repository_owner }}/slurm-standalone:slurm-24-05-0-1
           docker image inspect ghcr.io/${{ github.repository_owner }}/slurm-standalone:slurm-24-05-0-1
 
       - name: Test
