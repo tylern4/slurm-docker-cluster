@@ -1,10 +1,10 @@
 FROM rockylinux:9.3
 
 LABEL org.opencontainers.image.source="https://github.com/tylern4/slurm-docker-cluster" \
-      org.opencontainers.image.title="slurm-docker-cluster" \
-      org.opencontainers.image.description="Slurm Docker cluster on Rocky Linux 8" \
-      org.label-schema.docker.cmd="docker-compose up -d" \
-      maintainer="tylern@nersc"
+    org.opencontainers.image.title="slurm-docker-cluster" \
+    org.opencontainers.image.description="Slurm Docker cluster on Rocky Linux 8" \
+    org.label-schema.docker.cmd="docker-compose up -d" \
+    maintainer="tylern@nersc"
 
 RUN set -ex \
     && dnf makecache \
@@ -13,30 +13,30 @@ RUN set -ex \
     && dnf -y install dnf-plugins-core \
     && dnf config-manager --set-enabled crb \
     && dnf -y install \
-       wget \
-       openssh-server \
-       bzip2 \
-       perl \
-       gcc \
-       gcc-c++\
-       git \
-       gnupg \
-       make \
-       munge \
-       munge-devel \
-       python3-devel \
-       python3-pip \
-       python3 \
-       mariadb-server \
-       mariadb-devel \
-       psmisc \
-       bash-completion \
-       vim-enhanced \
-       http-parser-devel \
-       json-c-devel \
-       apptainer-suid \
-       podman \
-       openmpi-devel \
+    wget \
+    openssh-server \
+    bzip2 \
+    perl \
+    gcc \
+    gcc-c++\
+    git \
+    gnupg \
+    make \
+    munge \
+    munge-devel \
+    python3-devel \
+    python3-pip \
+    python3 \
+    mariadb-server \
+    mariadb-devel \
+    psmisc \
+    bash-completion \
+    vim-enhanced \
+    http-parser-devel \
+    json-c-devel \
+    apptainer-suid \
+    podman \
+    openmpi-devel \
     && dnf clean all \
     && rm -rf /var/cache/dnf
 
@@ -45,9 +45,10 @@ RUN groupadd -g 1000 hpcusers && useradd -rm -d /home/hpcuser -s /bin/bash -g 10
 RUN pip3 install Cython nose
 
 ARG GOSU_VERSION=1.11
+ARG TARGETARCH
 RUN set -ex \
-    && wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-amd64" \
-    && wget -O /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-amd64.asc" \
+    && wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-${TARGETARCH}" \
+    && wget -O /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-${TARGETARCH}.asc" \
     && export GNUPGHOME="$(mktemp -d)" \
     && gpg --batch --keyserver hkps://keys.openpgp.org --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 \
     && gpg --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu \
