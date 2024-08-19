@@ -36,6 +36,7 @@ RUN set -ex \
        json-c-devel \
        apptainer-suid \
        podman \
+       openmpi-devel \
     && dnf clean all \
     && rm -rf /var/cache/dnf
 
