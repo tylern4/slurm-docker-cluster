@@ -15,6 +15,7 @@ services:
     image: slurm-docker-cluster:${IMAGE_TAG:-23.11.6}
     build:
       context: .
+      file: Dockerfiles/rockylinux9.Dockerfile
       args:
         SLURM_TAG: ${SLURM_TAG:-slurm-23.11.6-6-1}
     command: ["slurmdbd"]

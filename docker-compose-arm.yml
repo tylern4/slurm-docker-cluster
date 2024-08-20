@@ -1,0 +1,153 @@
+services:
+  mysql:
+    image: mariadb:10.10
+    hostname: mysql
+    container_name: mysql
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+      MYSQL_DATABASE: slurm_acct_db
+      MYSQL_USER: slurm
+      MYSQL_PASSWORD: password
+    volumes:
+      - var_lib_mysql:/var/lib/mysql
+
+  slurmdbd:
+    image: slurm-docker-cluster:${IMAGE_TAG:-slurm-24-05-0-1}
+    build:
+      context: .
+      dockerfile: Dockerfiles/rockylinux9.Dockerfile
+      args:
+        SLURM_TAG: ${SLURM_TAG:-slurm-24-05-0-1}
+    command: ["slurmdbd"]
+    container_name: slurmdbd
+    hostname: slurmdbd
+    volumes:
+      - etc_munge:/etc/munge
+      - var_log_slurm:/var/log/slurm
+    expose:
+      - "6819"
+    depends_on:
+      - mysql
+
+  slurmctld:
+    image: slurm-docker-cluster:${IMAGE_TAG:-slurm-24-05-0-1}
+    command: ["slurmctld"]
+    container_name: slurmctld
+    hostname: slurmctld
+    volumes:
+      - etc_munge:/etc/munge
+      - slurm_jobdir:/data
+      - var_log_slurm:/var/log/slurm
+    expose:
+      - "6817"
+    depends_on:
+      - "slurmdbd"
+
+  login01:
+    image: slurm-docker-cluster:${IMAGE_TAG:-slurm-24-05-0-1}
+    command: ["slurmd"]
+    hostname: login01
+    container_name: login01
+    volumes:
+      - etc_munge:/etc/munge
+      - slurm_jobdir:/data
+      - var_log_slurm:/var/log/slurm
+      - ./ssh:/home/hpcuser/.ssh
+      - home_dir:/home/hpcuser
+    expose:
+      - "6818"
+      - "22"
+    depends_on:
+      - "slurmctld"
+
+  node01:
+    image: slurm-docker-cluster:${IMAGE_TAG:-slurm-24-05-0-1}
+    command: ["slurmd"]
+    hostname: node01
+    container_name: node01
+    volumes:
+      - etc_munge:/etc/munge
+      - slurm_jobdir:/data
+      - var_log_slurm:/var/log/slurm
+      - ./ssh:/home/hpcuser/.ssh
+      - home_dir:/home/hpcuser
+    expose:
+      - "6818"
+      - "22"
+    depends_on:
+      - "slurmctld"
+
+  node02:
+    image: slurm-docker-cluster:${IMAGE_TAG:-slurm-24-05-0-1}
+    command: ["slurmd"]
+    hostname: node02
+    container_name: node02
+    volumes:
+      - etc_munge:/etc/munge
+      - slurm_jobdir:/data
+      - var_log_slurm:/var/log/slurm
+      - ./ssh:/home/hpcuser/.ssh
+      - home_dir:/home/hpcuser
+    expose:
+      - "6818"
+      - "22"
+    depends_on:
+      - "slurmctld"
+
+  node03:
+    image: slurm-docker-cluster:${IMAGE_TAG:-slurm-24-05-0-1}
+    command: ["slurmd"]
+    hostname: node03
+    container_name: node03
+    volumes:
+      - etc_munge:/etc/munge
+      - slurm_jobdir:/data
+      - var_log_slurm:/var/log/slurm
+      - ./ssh:/home/hpcuser/.ssh
+      - home_dir:/home/hpcuser
+    expose:
+      - "6818"
+      - "22"
+    depends_on:
+      - "slurmctld"
+
+  node04:
+    image: slurm-docker-cluster:${IMAGE_TAG:-slurm-24-05-0-1}
+    command: ["slurmd"]
+    hostname: node04
+    container_name: node04
+    volumes:
+      - etc_munge:/etc/munge
+      - slurm_jobdir:/data
+      - var_log_slurm:/var/log/slurm
+      - ./ssh:/home/hpcuser/.ssh
+      - home_dir:/home/hpcuser
+    expose:
+      - "6818"
+      - "22"
+    depends_on:
+      - "slurmctld"
+
+  node05:
+    image: slurm-docker-cluster:${IMAGE_TAG:-slurm-24-05-0-1}
+    command: ["slurmd"]
+    hostname: node05
+    container_name: node05
+    volumes:
+      - etc_munge:/etc/munge
+      - slurm_jobdir:/data
+      - var_log_slurm:/var/log/slurm
+      - ./ssh:/home/hpcuser/.ssh
+      - home_dir:/home/hpcuser
+    expose:
+      - "6818"
+      - "22"
+    depends_on:
+      - "slurmctld"
+
+volumes:
+  etc_munge:
+  home_dir:
+  slurm_jobdir:
+  var_lib_mysql:
+  var_log_slurm:
