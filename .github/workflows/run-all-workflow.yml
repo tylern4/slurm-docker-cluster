@@ -15,7 +15,7 @@ jobs:
                   "slurm-23-11-7-1",
                   "slurm-24-05-0-1"
                 ]
-        os: ["opensuse", "rockylinux", "rockylinux9"]
+        os: ["rockylinux9"]
     uses: ./.github/workflows/run-one-workflow.yml
     with:
       version: ${{ matrix.version }}
