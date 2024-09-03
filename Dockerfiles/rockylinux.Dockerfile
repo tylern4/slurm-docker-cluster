@@ -37,7 +37,6 @@ RUN set -ex \
     apptainer-suid \
     podman \
     openmpi-devel \
-    pmix-devel \
     && dnf clean all \
     && rm -rf /var/cache/dnf
 
@@ -61,7 +60,7 @@ ARG SLURM_TAG=slurm-24-05-0-1
 RUN set -x \
     && git clone -b ${SLURM_TAG} --single-branch --depth=1 https://github.com/SchedMD/slurm.git \
     && pushd slurm \
-    && ./configure --with-pmix --enable-debug --prefix=/usr --sysconfdir=/etc/slurm \
+    && ./configure --enable-debug --prefix=/usr --sysconfdir=/etc/slurm \
     --with-mysql_config=/usr/bin  --libdir=/usr/lib64 \
     && make -j install \
     && install -D -m644 etc/cgroup.conf.example /etc/slurm/cgroup.conf.example \
