@@ -14,8 +14,8 @@ login_template = """{nodename}:
     - slurm_jobdir:/data
     - var_log_slurm:/var/log/slurm
     - ./ssh:/home/hpcuser/.ssh
-    - ./slurm.conf:/etc/slurm/slurm.conf:ro
-    - ./slurmdbd.conf:/etc/slurm/slurmdbd.conf:ro
+    - ./slurm/slurm.conf:/etc/slurm/slurm.conf:ro
+    - ./slurm/slurmdbd.conf:/etc/slurm/slurmdbd.conf:ro
   expose:
     - "6818"
   depends_on:
@@ -33,8 +33,8 @@ node_template = """{nodename}:
     - slurm_jobdir:/data
     - var_log_slurm:/var/log/slurm
     - ./ssh:/home/hpcuser/.ssh
-    - ./slurm.conf:/etc/slurm/slurm.conf:ro
-    - ./slurmdbd.conf:/etc/slurm/slurmdbd.conf:ro
+    - ./slurm/slurm.conf:/etc/slurm/slurm.conf:ro
+    - ./slurm/slurmdbd.conf:/etc/slurm/slurmdbd.conf:ro
   expose:
     - "6818"
   depends_on:
@@ -80,8 +80,8 @@ compose_template = """services:
       - etc_slurm:/etc/slurm
       - slurm_jobdir:/data
       - var_log_slurm:/var/log/slurm
-      - ./slurm.conf:/etc/slurm/slurm.conf:ro
-      - ./slurmdbd.conf:/etc/slurm/slurmdbd.conf:ro
+      - ./slurm/slurm.conf:/etc/slurm/slurm.conf:ro
+      - ./slurm/slurmdbd.conf:/etc/slurm/slurmdbd.conf:ro
     expose:
       - "6817"
     depends_on:
@@ -98,8 +98,8 @@ compose_template = """services:
       - slurm_jobdir:/data
       - var_log_slurm:/var/log/slurm
       - ./ssh:/home/hpcuser/.ssh
-      - ./slurm.conf:/etc/slurm/slurm.conf:ro
-      - ./slurmdbd.conf:/etc/slurm/slurmdbd.conf:ro
+      - ./slurm/slurm.conf:/etc/slurm/slurm.conf:ro
+      - ./slurm/slurmdbd.conf:/etc/slurm/slurmdbd.conf:ro
     expose:
       - "6818"
       - "22"
@@ -118,7 +118,7 @@ volumes:
 if len(sys.argv) > 1:
     image = sys.argv[1]
 else:
-    image = "ghcr.io/tylern4/slurm:slurm-21-08-6-1"
+    image = "ghcr.io/tylern4/slurm:slurm-24-05-0-1-rockylinux9"
 
 
 compose = yaml.safe_load(compose_template.format(image_name=image))
